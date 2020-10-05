@@ -1,12 +1,14 @@
+// Hàm dùng để tạo 1 phần tử trong list sharepoint
 function createListItem(siteUrl, listName, itemProperties, success, failure) {
+  var url = `${siteUrl}/_vti_bin/listdata.svc/${listName}`;
   $.ajax({
-    url: siteUrl + "/_vti_bin/listdata.svc/" + listName,
+    url: url,
     type: "POST",
     processData: false,
-    contentType: "application/json;odata=verbose",
+    contentType: "application/json; odata=verbose",
     data: JSON.stringify(itemProperties),
     headers: {
-      Accept: "application/json;odata=verbose",
+      Accept: "application/json; odata=verbose",
     },
     success: function (data) {
       success(data.d);
@@ -17,8 +19,9 @@ function createListItem(siteUrl, listName, itemProperties, success, failure) {
   });
 }
 
+// Lấy 1 phần tử trong list sharepoint
 function getListItemById(siteUrl, listName, itemId, success, failure) {
-  var url = siteUrl + "/_vti_bin/listdata.svc/" + listName + "(" + itemId + ")";
+  var url = `${siteUrl}/_vti_bin/listdata.svc${listName}(${itemId})`;
   $.ajax({
     url: url,
     method: "GET",
@@ -32,14 +35,8 @@ function getListItemById(siteUrl, listName, itemId, success, failure) {
   });
 }
 
-function updateListItem(
-  siteUrl,
-  listName,
-  itemId,
-  itemProperties,
-  success,
-  failure
-) {
+// Sửa 1 phần tử trong list sharepoint
+function updateListItem(siteUrl, listName, itemId, itemProperties, success, failure) {
   getListItemById(
     siteUrl,
     listName,
@@ -70,6 +67,7 @@ function updateListItem(
   );
 }
 
+// Xóa 1 phần tử trong list sharepoint
 function deleteListItem(siteUrl, listName, itemId, success, failure) {
   getListItemById(
     siteUrl,
@@ -98,24 +96,39 @@ function deleteListItem(siteUrl, listName, itemId, success, failure) {
   );
 }
 
+// Lấy code từ thẻ select-office-area
+// Fill Dashboard từ giá trị nhận được đó
+// Dùng chính trong hàm thêm dashboard, cũng có thể dùng trong hàm sửa dashboard
 function fillDashboard(obj) {
   var code = obj.value;
+
   $(".option-dashboard-office-area").remove();
   $("#option-default-office-area").remove();
   var type1 = $(".select-type").val();
   if (type1 == "Đơn vị") {
+    fillDashboardOffice(code);
+  }
+
+  if (type1 == "Địa bàn") {
+    fillDashboardArea(code);
+  }
+}
+
+// Lấy dữ liệu và đổ giá trị ra thẻ select-dashboard
+// Kích hoạt khi giá trị thẻ select-type là "Đơn vị"
+function fillDashboardOffice(code) {
+  var url = `/bcapi/dashboard/office/${code}`;
   $.ajax({
     async: false,
     type: "GET",
-    url: `/bcapi/dashboard/office/${code}`,
+    url: url,
     dataType: "json",
     success: function (response) {
       var data = response.result;
-      console.log(data);
       $(".label-type").text("Đơn vị");
-      $(".select-dashboard").append(
-        `<option id="option-default-office-area" style="display:none;" selected>Chọn đơn vị</option>`
-      );
+
+      var defaultOption = `<option id="option-default-office-area" style="display:none;" selected>Chọn đơn vị</option>`;
+      $(".select-dashboard").append(defaultOption);
 
       data.forEach((element) => {
         var option = `<option class="option-office-area" value="${element.ID}">${element.Title}</option>`;
@@ -123,21 +136,25 @@ function fillDashboard(obj) {
       });
     },
   });
+}
 
-  }
-  
-  if (type1 == "Địa bàn") {
-    $.ajax({
+
+// Lấy dữ liệu và đổ giá trị ra thẻ select-dashboard
+// Kích hoạt khi giá trị thẻ select-type là "Địa bàn"
+function fillDashboardArea(code) {
+  var url = `/bcapi/dashboard/area/${code}`;
+
+  $.ajax({
     async: false,
     type: "GET",
-    url: `/bcapi/dashboard/area/${code}`,
+    url: url,
     dataType: "json",
     success: function (response) {
       var data = response.result;
       $(".label-type").text("Địa bàn");
-      $(".select-dashboard").append(
-        `<option id="option-default-office-area" style="display:none;" selected>Chọn địa bàn</option>`
-      );
+
+      var defaultOption = `<option id="option-default-office-area" style="display:none;" selected>Chọn địa bàn</option>`;
+      $(".select-dashboard").append(defaultOption);
 
       data.forEach((element) => {
         var option = `<option class="option-office-area" value="${element.ID}">${element.Title}</option>`;
@@ -145,11 +162,10 @@ function fillDashboard(obj) {
       });
     },
   });
-
-  }
-  
 }
 
+// Được gọi ở hàm changType() bên dưới nếu giá trị type là office
+// Đổ ra các đơn vị có dashboard
 function fillOffice() {
   $.ajax({
     async: false,
@@ -159,9 +175,9 @@ function fillOffice() {
     success: function (response) {
       var data = response.result.Office;
       $(".label-type").text("Đơn vị");
-      $(".select-office-area").append(
-        `<option id="option-default-office-area" style="display:none;" selected>Chọn đơn vị</option>`
-      );
+
+      var defaultOption = `<option id="option-default-office-area" style="display:none;" selected>Chọn đơn vị</option>`;
+      $(".select-office-area").append(defaultOption);
 
       data.forEach((element) => {
         var option = `<option class="option-office-area" value="${element.OfficeCode}">${element.OfficeName}</option>`;
@@ -171,6 +187,9 @@ function fillOffice() {
   });
 }
 
+
+// Được gọi ở hàm changType() bên dưới nếu giá trị type là area
+// Đổ ra các địa bàn có dashboard
 function fillArea() {
   $.ajax({
     async: false,
@@ -180,9 +199,9 @@ function fillArea() {
     success: function (response) {
       var data = response.result.Area;
       $(".label-type").text("Địa bàn");
-      $(".select-office-area").append(
-        `<option id="option-default-office-area" style="display:none;" selected>Chọn địa bàn</option>`
-      );
+
+      var defaultOption = `<option id="option-default-office-area" style="display:none;" selected>Chọn địa bàn</option>`;
+      $(".select-office-area").append(defaultOption);
 
       data.forEach((element) => {
         var option = `<option class="option-office-area" value="${element.AreaCode}">${element.AreaName}</option>`;
@@ -192,32 +211,17 @@ function fillArea() {
   });
 }
 
-function fillPermissionCheckBox() {
-  $.ajax({
-    async: false,
-    type: "GET",
-    url:
-      "https://baocao.hanhchinhcong.net/_vti_bin/tdcore/usersservice.svc/Permissions?siteId=4e620731-b9fd-41f0-8377-eb55a769577c&orderby=Order",
-    dataType: "json",
-    success: function (response) {
-      var data = response.result;
-
-      data.forEach((element) => {
-        $(".list-permission").append(`
-                    <div class="form-group m-form__group row col-6">
-                        <input type="checkbox" id="${element.Code}" class="Permission" value="${element.Code}" class="col-2 form-control">
-                        <label for="${element.Code}" class="col-form-label col-5">${element.Name}</label><br>
-                    </div>
-                    `);
-      });
-    },
-  });
-}
-
+// Thay đổi giá trị của thẻ select-type
+// Từ đó fill giá trị tương ứng thẻ select-office-area
 function changeType() {
   var value = $(".select-type").val();
+
+  // Bỏ giá trị mặc định
   $("#option-default-office-area").remove();
+
+  // Bỏ giá trị đã chọn trước đó
   $(".option-office-area").remove();
+
   switch (value) {
     case "Đơn vị":
       fillOffice();
@@ -228,103 +232,69 @@ function changeType() {
   }
 }
 
-function getPermissionCheckBox() {
-  var result = "";
+function getLink(id) {
+  return `~sitecollection/Sitepages/dashboard.aspx#${id}`;
+}
 
-  $(".Permission").each(function () {
-    if ($(this).is(":checked")) result += `${this.value},`;
+function fillPermissionSelect2(lstPermission) {
+  $(".select-permission").select2();
+
+
+  lstPermission.forEach((element) => {
+    var option = `<option value = ${element.Code} data-select2-id = ${element.Code}>${element.Title}</option>`;
+    $(".select-permission").append(option);
+  });
+}
+
+// Lấy danh sách các quyền đã chọn từ thẻ select-permission
+function getPermissionSelect2() {
+  var listPermissionSelected = $('.select-permission').find(':selected');
+  var rs = "";
+  if (listPermissionSelected) {
+    jQuery.each(listPermissionSelected, function (key, value) {
+      if (listPermissionSelected[key].value) {
+        var permission = listPermissionSelected[key].value + ",";
+        rs += permission;
+      }
+    });
+  }
+  return rs.substring(0, rs.length - 1);
+}
+
+function fillPermissionSelect2Edit(lstPermission, visibleOnly) {
+  var url = "/_vti_bin/tdcore/usersservice.svc/Permissions?siteId=4e620731-b9fd-41f0-8377-eb55a769577c&orderby=Order";
+  $(".select-permission-edit").select2();
+  var permissions = visibleOnly.split(',');
+
+
+  lstPermission.forEach((element) => {
+    if (permissions.includes(element.Code)) {
+      var option = `<option selected value = ${element.Code} data-select2-id = ${element.Code}>${element.Title} </option>`;
+      $(".select-permission-edit").append(option);
+    } else {
+      var option = `<option value = ${element.Code} data-select2-id = ${element.Code}>${element.Title}</option>`;
+      $(".select-permission-edit").append(option);
+    }
   });
 
-  console.log(result);
-  return result.substring(0, result.length - 1);
 }
 
-function getLink(id) {
-    return `~sitecollection/Sitepages/dashboard.aspx#${id}`;
+function fillParent(lstDashboard) {
+  lstDashboard.forEach((element) => {
+    var option = `<option value=${element.Code} data-select2-id="${element.ID}">${element.Title}</option>`;
+    $(".select-parent").append(option);
+  });
 }
 
-function fillPermissionSelect2() {
-    $(".select-permission").select2();
-
-    $.ajax({
-        async: false,
-        type: "GET",
-        url:
-          "/_vti_bin/tdcore/usersservice.svc/Permissions?siteId=4e620731-b9fd-41f0-8377-eb55a769577c&orderby=Order",
-        dataType: "json",
-        success: function (response) {
-          var data = response.result;
-    
-          data.forEach((element) => {
-            $(".select-permission").append(`
-                <option value = ${element.Code} data-select2-id = ${element.Code}>${element.Title}</option>
-                        `);
-          });
-        },
-      });
-}
-
-function getPermissionSelect2() {
-    var listPermissionSelected = $('.select-permission').find(':selected');
-    var rs = "";
-    if (listPermissionSelected){
-        jQuery.each(listPermissionSelected, function( key, value ) {
-            if(listPermissionSelected[key].value){
-                var permission = listPermissionSelected[key].value+",";
-                rs += permission;
-            }
-        });
-    }
-    return rs.substring(0, rs.length - 1);
-}
-
-function fillPermissionSelect2Data(visibleOnly) {
-  $(".select-permission").select2();
-  var permissions = visibleOnly.split(',');
-  
-  $.ajax({
-      async: false,
-      type: "GET",
-      url:
-        "/_vti_bin/tdcore/usersservice.svc/Permissions?siteId=4e620731-b9fd-41f0-8377-eb55a769577c&orderby=Order",
-      dataType: "json",
-      success: function (response) {
-        var data = response.result;
-  
-        data.forEach((element) => {
-          if (permissions.includes(element.Code)) {
-            $(".select-permission").append(`
-            <option selected value = ${element.Code} data-select2-id = ${element.Code}>${element.Title} </option>
-                    `);
-          } else {
-            $(".select-permission").append(`
-            <option value = ${element.Code} data-select2-id = ${element.Code}>${element.Title}</option>
-                    `);
-          }
-        });
-      },
-    });
-}
-
-function fillParent(data) {
-    data.forEach((element) => {
-        $(".select-parent").append(`
-            <option value=${element.Code} data-select2-id="${element.ID}">${element.Title}</option>
-                    `);
-      });
-}
-
-function fillParentData(data, parent) {
-  data.forEach((element) => {
+function fillParentEdit(lstDashboard, parent) {
+  lstDashboard.forEach((element) => {
     if (element.Title == parent.Parent?.LookupValue) {
-      $(".select-parent").append(`
-      <option selected value = ${element.Code} data-select2-id = "${element.ID}">${element.Title}</option>
-              `);
-    } 
+      var option = `<option selected value = ${element.Code} data-select2-id = "${element.ID}">${element.Title}</option>`;
+      $(".select-parent-edit").append(option);
+    }
     else {
-      $(".select-parent").append(`
-      <option value = ${element.Code} data-select2-id = "${element.ID}">${element.Title}</option>
-              `);
+      var option = `<option value = ${element.Code} data-select2-id = "${element.ID}">${element.Title}</option>`;
+      $(".select-parent-edit").append(option);
     }
   });
 }

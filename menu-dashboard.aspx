@@ -107,7 +107,7 @@
             <div class="form-group m-form__group row  col-6">
                 <label class="col-form-label col-3">Loại biểu đồ</label>
                 <div class="col-9">
-                    <select class="select-type bs-select form-control" style="font-size:15px"
+                    <select class="select-type bs-select form-control edit" style="font-size:15px"
                         data-placeholder="Chọn loại biểu đồ" onchange=changeType()>
                         <option id="option-default-office" style="display:none;" selected>Chọn loại biểu đồ</option>
                         <option id="option-type-office" value="Đơn vị" >Đơn vị</option>
@@ -120,7 +120,7 @@
             <div class="form-group m-form__group row  col-6">
                 <label class="col-form-label col-3 label-type">--------</label>
                 <div class="col-9">
-                    <select class="select-office-area bs-select form-control" style="font-size:15px">                   
+                    <select class="select-office-area bs-select form-control edit" style="font-size:15px">                   
                     </select>
                 </div>
             </div>
@@ -129,7 +129,7 @@
             <div class="form-group m-form__group row  col-6">
                 <label class="col-form-label col-3">Dashboard</label>
                 <div class="col-9">
-                    <select class="select-dashboard bs-select form-control select2" style="font-size:15px"
+                    <select class="select-dashboard bs-select form-control select2 edit" style="font-size:15px"
                         data-placeholder="Chọn dashboard">
                         <option style="display:none;" selected>Chọn dashboard</option>
                     </select>
@@ -138,7 +138,7 @@
             <div class="form-group m-form__group row  col-6">
                 <label class="col-form-label col-3">Chọn menu cha</label>
                 <div class="col-9">
-                    <select class="select-parent bs-select form-control" style="font-size:15px"
+                    <select class="select-parent-edit bs-select form-control" style="font-size:15px"
                         data-placeholder="Chọn menu cha">     
                         <option selected>----Không----</option>         
                     </select>
@@ -148,7 +148,7 @@
             <div class="form-group m-form__group row  col-6">
                 <label class="col-form-label col-3">Vai trò</label>
                 <div class="col-9">
-                    <select class="select-permission form-control select2 m-select2" style="font-size:15px" multiple="multiple"
+                    <select class="select-permission-edit form-control select2 m-select2" style="font-size:15px" multiple="multiple"
                         data-placeholder="Chọn vai trò">
                     </select>
                 </div>
@@ -157,7 +157,7 @@
         </div>
    </script>
 
-    <script id="add-office-template" type="text/html">
+    <script id="add-template" type="text/html">
         <div class="m-form m-form--label-align-right p-3 row" tdf-type="form">
             <div class="form-group m-form__group row col-6">
                 <label class="col-form-label col-3">Tiêu đề</label>

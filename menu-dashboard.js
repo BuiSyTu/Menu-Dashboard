@@ -1,20 +1,30 @@
 !(function (factory) {
   factory(
     jQuery,
-    routie,
-    td.bc,
-    td.bc.dashboard,
-    tdcore.apis,
     tdcore.modals,
     tdcore.forms
   );
-})(function ($, routie, bc, db, apis, modals, forms) {
+})(function ($, modals, forms) {
   var lstDashboard;
+  var lstPermission;
 
   $("[add-dashboard-office]").click(function () {
-    viewAddOffice();
+    viewAdd();
+  });
+  
+  // Lưu giá trị cho biến toàn cục lstPermission
+  $.ajax({
+    async: false,
+    type: "GET",
+    url:
+      "/_vti_bin/tdcore/usersservice.svc/Permissions?siteId=4e620731-b9fd-41f0-8377-eb55a769577c&orderby=Order",
+    dataType: "json",
+    success: function (response) {
+      lstPermission = response.result;
+    }
   });
 
+  // Đổ dữ liệu ra table, lưu giá trị cho biến lstDashboard và gán sự kiện cho các button
   $.ajax({
     async: false,
     type: "GET",
@@ -173,10 +183,10 @@
       .show();
   }
 
-  function viewAddOffice() {
+  function viewAdd() {
     modals
       .modal("Thêm dashboard")
-      .content($("#add-office-template").html())
+      .content($("#add-template").html())
       .size(800, 500)
       .okCancel()
       .ready(function (mdl) {
@@ -188,8 +198,7 @@
           )[0];
         });
         
-        // fillOffice();
-        fillPermissionSelect2();
+        fillPermissionSelect2(lstPermission);
         fillParent(lstDashboard);
 
       })
@@ -251,8 +260,8 @@
             if (data.Active) {
               $(".active").prop("checked", true);
             }
-            fillPermissionSelect2Data(data.VisibleOnly);
-            fillParentData(lstDashboard, data);
+            fillPermissionSelect2Edit(lstPermission, data.VisibleOnly);
+            fillParentEdit(lstDashboard, data);
             fillDashboard(data);
           }
         });
