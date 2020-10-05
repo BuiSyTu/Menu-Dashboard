@@ -145,6 +145,7 @@
         })
         .on("click", "[btn-editData]", function (evt) {
           var id = $(evt.currentTarget).attr("data-id");
+          console.log(id);
           viewEdit(id);
         })
         .on("click", "[btn-deletedata]", function (evt) {
@@ -211,16 +212,25 @@
         return form.tryValidate().then(function () {
           var val = form.getData();
           val.Active = $(".active").prop("checked") ? true : false;
+
           var id = $(".select-dashboard").children("option:selected").val();
-          val.Link = getLink(id);
+          if (id) {
+            val.Link = getLink(id);
+          }
+
           val.VisibleOnly = getPermissionSelect2();
-          val.Name = $(".select-dashboard :selected").text();
-           
+
+          var name = $(".select-dashboard :selected").text();
+
+          if (name) {
+            val.Name = name;
+          }
+          
           var parentId = parseInt($(".select-parent").children("option:selected").attr("data-select2-id"));
-          var parentTitle = $(".select-parent").children("option:selected").text();
           if (parentId) {
             val.Parent = {__metadata: {uri: `${window.location.origin}/sites/bc_board/_vti_bin/ListData.svc/Menu(${parentId})`}};
           }
+
           console.log(val);
           createListItem(
             "/sites/bc_board",
@@ -262,7 +272,7 @@
             }
             fillPermissionSelect2Edit(lstPermission, data.VisibleOnly);
             fillParentEdit(lstDashboard, data);
-            fillDashboard(data);
+            // fillDashboard(data);
           }
         });
       })
@@ -276,13 +286,20 @@
           var val = form.getData();
           val.Active = $(".active").prop("checked") ? true : false;
 
-          var id = $(".select-dashboard").children("option:selected").val();
-          val.Link = getLink(id);
-          val.VisibleOnly = getPermissionSelect2();
-          val.Name = $(".select-dashboard :selected").text();
+          var _id = $(".select-dashboard-edit").children("option:selected").val();
+          if (_id) {
+            val.Link = getLink(id);
+          }
+          
+          val.VisibleOnly = getPermissionSelect2Edit();
+
+          var name = $(".select-dashboard-edit :selected").text();
+          if (name) {
+            val.Name = name;
+          }
+
            
-          var parentId = parseInt($(".select-parent").children("option:selected").attr("data-select2-id"));
-          var parentTitle = $(".select-parent").children("option:selected").text();
+          var parentId = parseInt($(".select-parent-edit").children("option:selected").attr("data-select2-id"));
           if (parentId) {
             val.Parent = {__metadata: {uri: `${window.location.origin}/sites/bc_board/_vti_bin/ListData.svc/Menu(${parentId})`}};
           }

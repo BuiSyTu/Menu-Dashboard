@@ -107,11 +107,11 @@
             <div class="form-group m-form__group row  col-6">
                 <label class="col-form-label col-3">Loại biểu đồ</label>
                 <div class="col-9">
-                    <select class="select-type bs-select form-control edit" style="font-size:15px"
-                        data-placeholder="Chọn loại biểu đồ" onchange=changeType()>
-                        <option id="option-default-office" style="display:none;" selected>Chọn loại biểu đồ</option>
-                        <option id="option-type-office" value="Đơn vị" >Đơn vị</option>
-                        <option id="option-type-area" value="Địa bàn" >Địa bàn</option>
+                    <select class="select-type-edit bs-select form-control edit" style="font-size:15px"
+                        data-placeholder="Chọn loại biểu đồ" onchange=changeTypeEdit()>
+                        <option id="option-default-office-edit" style="display:none;" selected>Chọn loại biểu đồ</option>
+                        <option id="option-type-office-edit" value="Đơn vị" >Đơn vị</option>
+                        <option id="option-type-area-edit" value="Địa bàn" >Địa bàn</option>
                     </select>
                 </div>
             </div>
@@ -120,7 +120,7 @@
             <div class="form-group m-form__group row  col-6">
                 <label class="col-form-label col-3 label-type">--------</label>
                 <div class="col-9">
-                    <select class="select-office-area bs-select form-control edit" style="font-size:15px">                   
+                    <select class="select-office-area-edit bs-select form-control" onchange=fillDashboardEdit(this) style="font-size:15px">                   
                     </select>
                 </div>
             </div>
@@ -129,7 +129,7 @@
             <div class="form-group m-form__group row  col-6">
                 <label class="col-form-label col-3">Dashboard</label>
                 <div class="col-9">
-                    <select class="select-dashboard bs-select form-control select2 edit" style="font-size:15px"
+                    <select class="select-dashboard-edit bs-select form-control select2" style="font-size:15px"
                         data-placeholder="Chọn dashboard">
                         <option style="display:none;" selected>Chọn dashboard</option>
                     </select>
@@ -234,15 +234,6 @@
             <div class="col-6"></div>
         </div>
     </script>
-
-    <script id="combobox-area" type="text/html">
-        <span title="{{AreaName}}">{{AreaName}}</span>
-    </script>
-
-    <script id="combobox-office" type="text/html">
-            <span title="{{OfficeName}}">{{OfficeName}}</span>
-    </script>
-
 </asp:Content>
 <asp:Content runat="server" ContentPlaceHolderID="PlaceHolderPageVendorStyles">
 	<link rel="stylesheet" type="text/css" href="/_layouts/15/TD.BC/assets/css/vendors.min.css" />
