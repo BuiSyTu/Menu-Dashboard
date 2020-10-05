@@ -110,8 +110,8 @@
                     <select class="select-type bs-select form-control" style="font-size:15px"
                         data-placeholder="Chọn loại biểu đồ" onchange=changeType()>
                         <option id="option-default-office" style="display:none;" selected>Chọn loại biểu đồ</option>
-                        <option id="option-type-office" >Đơn vị</option>
-                        <option id="option-type-area" >Địa bàn</option>
+                        <option id="option-type-office" value="Đơn vị" >Đơn vị</option>
+                        <option id="option-type-area" value="Địa bàn" >Địa bàn</option>
                     </select>
                 </div>
             </div>

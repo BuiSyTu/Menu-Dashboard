@@ -98,11 +98,56 @@ function deleteListItem(siteUrl, listName, itemId, success, failure) {
   );
 }
 
-function fillDashboard(data) {
-    var temp = data.Link.split('#');
-    var id = temp[1];
-    var option = `<option selected class="option-dashboard-office-area" value="${id}">${data.Name}</option>`;
-    $(".select-dashboard").append(option);
+function fillDashboard(obj) {
+  var code = obj.value;
+  $(".option-dashboard-office-area").remove();
+  $("#option-default-office-area").remove();
+  var type1 = $(".select-type").val();
+  if (type1 == "Đơn vị") {
+  $.ajax({
+    async: false,
+    type: "GET",
+    url: `/bcapi/dashboard/office/${code}`,
+    dataType: "json",
+    success: function (response) {
+      var data = response.result;
+      console.log(data);
+      $(".label-type").text("Đơn vị");
+      $(".select-dashboard").append(
+        `<option id="option-default-office-area" style="display:none;" selected>Chọn đơn vị</option>`
+      );
+
+      data.forEach((element) => {
+        var option = `<option class="option-office-area" value="${element.ID}">${element.Title}</option>`;
+        $(".select-dashboard").append(option);
+      });
+    },
+  });
+
+  }
+  
+  if (type1 == "Địa bàn") {
+    $.ajax({
+    async: false,
+    type: "GET",
+    url: `/bcapi/dashboard/area/${code}`,
+    dataType: "json",
+    success: function (response) {
+      var data = response.result;
+      $(".label-type").text("Địa bàn");
+      $(".select-dashboard").append(
+        `<option id="option-default-office-area" style="display:none;" selected>Chọn địa bàn</option>`
+      );
+
+      data.forEach((element) => {
+        var option = `<option class="option-office-area" value="${element.ID}">${element.Title}</option>`;
+        $(".select-dashboard").append(option);
+      });
+    },
+  });
+
+  }
+  
 }
 
 function fillOffice() {
@@ -235,11 +280,9 @@ function getPermissionSelect2() {
 
 function fillPermissionSelect2Data(visibleOnly) {
   $(".select-permission").select2();
-  var permissions;
-  if (visibleOnly) permissions = visibleOnly.split(',');
+  var permissions = visibleOnly.split(',');
   
-  if (permissions) {
-    $.ajax({
+  $.ajax({
       async: false,
       type: "GET",
       url:
@@ -261,7 +304,6 @@ function fillPermissionSelect2Data(visibleOnly) {
         });
       },
     });
-  }
 }
 
 function fillParent(data) {
